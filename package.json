@@ -1,0 +1,11 @@
+{
+  "name": "venta_online_proyecto_final_unida1",
+  "version": "1.0.0",
+  "description": "Proyecto final in6bv Primera unidad",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Genrry Uwualdo Luis Alvarado",
+  "license": "ISC"
+}
