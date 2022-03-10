@@ -11,7 +11,7 @@ function Registrar(req, res) {
             usuarioModel.nombre = parametros.nombre;
             usuarioModel.apellido = parametros.apellido;
             usuarioModel.email = parametros.email;
-            usuarioModel.rol = 'ROL_ALUMNO';
+            usuarioModel.rol = 'ROL_CLIENTE';
             usuarioModel.imagen = null;
 
             Usuario.find({ email : parametros.email }, (err, usuarioEncontrado) => {
@@ -42,13 +42,13 @@ function RegistrarAdmin(req, res) {
     var usuarioModel = new Usuario();
 
 
-    usuarioModel.nombre = 'MAESTRO';
-    usuarioModel.apellido = 'MAESTRO';
-    usuarioModel.email = 'MAESTRO';
-    usuarioModel.rol = 'ROL_MAESTRO';
+    usuarioModel.nombre = 'ADMIN';
+    usuarioModel.apellido = 'ADMIN';
+    usuarioModel.email = 'ADMIN';
+    usuarioModel.rol = 'ADMIN';
     usuarioModel.imagen = null;
 
-    Usuario.find({ email : 'MAESTRO' }, (err, usuarioEncontrado) => {
+    Usuario.find({ email : 'ADMIN' }, (err, usuarioEncontrado) => {
         if ( usuarioEncontrado.length == 0 ) {
 
             bcrypt.hash('123456', null, null, (err, passwordEncriptada) => {
@@ -106,17 +106,22 @@ function Login(req, res) {
     })
 }
 
+//Unicamente puede editarse así misma
 function EditarUsuario(req, res) {
     var idUser = req.params.idUsuario;
-    var parametros = req.body;    
+    var parametros = req.body;  
+    
+    // Borrar la propiedad del password y rol en el body
+    delete parametros.password
+    delete parametros.rol
 
     if ( idUser !== req.user.sub ) return res.status(500)
         .send({ mensaje: 'No puede editar otros usuarios'});
 
     Usuario.findByIdAndUpdate(req.user.sub, parametros, {new : true},
-        (err, usuarioActualizado)=>{
+        (err, usuarioActualizado)=>{ ////funcion de respuesta
             if(err) return res.status(500)
-                .send({ mensaje: 'Error en la peticion' });
+                .send({ mensaje: 'Error en la petición' });
             if(!usuarioActualizado) return res.status(500)
                 .send({ mensaje: 'Error al editar el Usuario'});
             
@@ -124,9 +129,26 @@ function EditarUsuario(req, res) {
         })
 }
 
+
+function EliminarUsuario(req, res) {
+    var idProd = req.params.idUsuario; //Obtener el valor de la variable en ruta
+
+    Usuario.findByIdAndDelete(idProd, (err, productoEliminado)=>{
+
+        //Verificaciones
+        if(err) return res.status(500).send({ mensaje: 'Error en la peticion' });
+        if(!productoEliminado) return res.status(500)
+            .send({ mensaje: 'Error al eliminar el producto' })
+        //Verificaciones
+
+        return res.status(200).send({ producto: productoEliminado });
+    })
+}
+
 module.exports = {
     Registrar,
     RegistrarAdmin, 
     Login,
-    EditarUsuario
+    EditarUsuario,
+    EliminarUsuario
 }
