@@ -106,27 +106,9 @@ function Login(req, res) {
     })
 }
 
-function EditarUsuario(req, res) {
-    var idUser = req.params.idUsuario;
-    var parametros = req.body;    
-
-    if ( idUser !== req.user.sub ) return res.status(500)
-        .send({ mensaje: 'No puede editar otros usuarios'});
-
-    Usuario.findByIdAndUpdate(req.user.sub, parametros, {new : true},
-        (err, usuarioActualizado)=>{
-            if(err) return res.status(500)
-                .send({ mensaje: 'Error en la peticion' });
-            if(!usuarioActualizado) return res.status(500)
-                .send({ mensaje: 'Error al editar el Usuario'});
-            
-            return res.status(200).send({usuario : usuarioActualizado})
-        })
-}
-
 module.exports = {
     Registrar,
     RegistrarAdmin, 
     Login,
-    EditarUsuario
+    //EditarUsuario
 }
