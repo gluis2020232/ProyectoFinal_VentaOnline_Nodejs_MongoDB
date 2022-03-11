@@ -28,7 +28,49 @@ function agregarProductos (req, res) {
 }
 
 
+function editarProducto(req, res) {
+    var idProd = req.params.idProducto; //Obtener el valor de la variable en ruta
+    var parametros = req.body; //Obtener los los parámetros en el body
+
+    Productos.findByIdAndUpdate(idProd, parametros, { new:true } ,(err, productoEditado)=>{
+      
+        //Verificaciones
+        if (err) return res.status(500).send({ mensaje: 'Error en la peticion' });
+        if(!productoEditado) return res.status(404)
+            .send({ mensaje: 'Error al Editar el Producto' });
+        //Verificaciones
+
+        return res.status(200).send({ productos: productoEditado});
+    })
+}
+
+
+function eliminarProducto(req, res) {
+    var idProd = req.params.idProducto; //Obtener el valor de la variable en ruta
+
+    Productos.findByIdAndDelete(idProd, (err, productoEliminado)=>{
+
+        //Verificaciones
+        if(err) return res.status(500).send({ mensaje: 'Error en la peticion' });
+        if(!productoEliminado) return res.status(500)
+            .send({ mensaje: 'Error al eliminar el producto' })
+        //Verificaciones
+
+        return res.status(200).send({ producto: productoEliminado });
+    })
+}
+
+function obtenerProductos (req, res)  {
+    Productos.find({}, (err, productosEncontrados) => {
+        
+        return res.send({ productos: productosEncontrados })
+    })
+}
+
 
 module.exports = {
-    agregarProductos
+    agregarProductos,
+    editarProducto,
+    eliminarProducto,
+    obtenerProductos
 }
