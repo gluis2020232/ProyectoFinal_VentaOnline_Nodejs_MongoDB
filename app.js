@@ -4,8 +4,8 @@ const app = express();
 
 //IMPORTACION RUTAS
 const usuarioRutas = require('./src/routes/usuario.routes');
-const productoRutas = require('./src/routes/productos.routes')
-
+const productoRutas = require('./src/routes/productos.routes');
+const categoriaRutas = require('./src/routes/categoría.routes');
 
 //MIDDLEWARE : Un middleware es un intermedio y un verificador de etc
 app.use(express.urlencoded({ extended: false}));
@@ -16,6 +16,6 @@ app.use(cors()); //Cargo la cabecera
 
 
 // CARGA DE RUTAS localhost:3000
-app.use('/api', usuarioRutas, productoRutas);
+app.use('/api', usuarioRutas, productoRutas, categoriaRutas);
 
 module.exports = app;
