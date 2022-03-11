@@ -12,3 +12,24 @@ exports.verCliente = function(req, res, next) {
     
     next();
 }
+
+//Si no es rol ADMIN no lo deja editar
+exports.verAdminEdit = function(req, res, next) {
+    if(req.user.rol !== "ADMIN") return res.status(403).send({mensaje: "Solo puede editar el Administrador"})
+    
+    next();
+}
+
+//Si no es rol ADMIN no lo deja eliminar
+exports.verAdminDelete = function(req, res, next) {
+    if(req.user.rol !== "ADMIN") return res.status(403).send({mensaje: "Solo puede eliminar el Administrador"})
+    
+    next();
+}
+
+//Si no es rol ADMIN no lo deja visualizar
+exports.verAdminVisua = function(req, res, next) {
+    if(req.user.rol !== "ADMIN") return res.status(403).send({mensaje: "Solo el Administrador puede visualizar"})
+    
+    next();
+}
