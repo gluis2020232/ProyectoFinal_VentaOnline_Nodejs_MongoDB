@@ -106,27 +106,24 @@ function Login(req, res) {
     })
 }
 
-//Unicamente puede editarse así misma
+
 function EditarUsuario(req, res) {
-    var idUser = req.params.idUsuario;
-    var parametros = req.body;  
-    
-    // Borrar la propiedad del password y rol en el body
-    delete parametros.password
-    delete parametros.rol
+    var idUser = req.params.idUsuario; //Obtener el valor de la variable en ruta
+    var parametros = req.body; //Obtener los los parámetros en el body
 
-    if ( idUser !== req.user.sub ) return res.status(500)
-        .send({ mensaje: 'No puede editar otros usuarios'});
+    delete parametros.password;
+    delete parametros.rol;
 
-    Usuario.findByIdAndUpdate(req.user.sub, parametros, {new : true},
-        (err, usuarioActualizado)=>{ ////funcion de respuesta
-            if(err) return res.status(500)
-                .send({ mensaje: 'Error en la petición' });
-            if(!usuarioActualizado) return res.status(500)
-                .send({ mensaje: 'Error al editar el Usuario'});
-            
-            return res.status(200).send({usuario : usuarioActualizado})
-        })
+    Usuario.findByIdAndUpdate(idUser, parametros, { new:true } ,(err, usuarioActualizado) => {
+      
+        //Verificaciones
+        if (err) return res.status(500).send({ mensaje: 'Error en la peticion' });
+        if(!usuarioActualizado) return res.status(404)
+            .send({ mensaje: 'Error al Editar el Usuario' });
+        //Verificaciones
+
+        return res.status(200).send({ usuario: usuarioActualizado});
+    })
 }
 
 
@@ -138,10 +135,10 @@ function EliminarUsuario(req, res) {
         //Verificaciones
         if(err) return res.status(500).send({ mensaje: 'Error en la peticion' });
         if(!productoEliminado) return res.status(500)
-            .send({ mensaje: 'Error al eliminar el producto' })
+            .send({ mensaje: 'Error al eliminar el Usuario' })
         //Verificaciones
 
-        return res.status(200).send({ producto: productoEliminado });
+        return res.status(200).send({ usuario: productoEliminado });
     })
 }
 

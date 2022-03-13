@@ -15,4 +15,6 @@ api.post('/agregarCategoria', [md_autenticacion.Auth, md_roles.verAdmin], contro
 api.put('/editarCategoria/:idCategoria', [md_autenticacion.Auth, md_roles.verAdminEdit], controladorCategoria.editarCategoria);
 api.delete('/eliminarCategoria/:idCategoria', [md_autenticacion.Auth, md_roles.verAdminDelete], controladorCategoria.eliminarCategoria);
 
+api.post('/asignarCategoria', [md_autenticacion.Auth, md_roles.verCliente], controladorCategoria.asignarCategoria);
+
 module.exports = api;

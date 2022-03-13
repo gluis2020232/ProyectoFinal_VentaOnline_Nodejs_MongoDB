@@ -15,4 +15,6 @@ api.post('/agregarProductos', [md_autenticacion.Auth, md_roles.verAdmin], contro
 api.put('/editarProducto/:idProducto', [md_autenticacion.Auth, md_roles.verAdminEdit], controladorProducto.editarProducto);
 api.delete('/eliminarProducto/:idProducto', [md_autenticacion.Auth, md_roles.verAdminDelete], controladorProducto.eliminarProducto);
 
+api.get('/buscarProducto/:nombreProducto', [md_autenticacion.Auth, md_roles.verClienteVisua], controladorProducto.BusquedaProductoPorNombre);
+
 module.exports = api;

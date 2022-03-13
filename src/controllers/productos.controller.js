@@ -68,9 +68,23 @@ function obtenerProductos (req, res)  {
 }
 
 
+function BusquedaProductoPorNombre(req, res) {
+    var nomProd = req.params.nombreProducto;
+
+    Productos.find({ nombre: nomProd }, (err, productosEncontrados) => {
+        if(err) return res.status(500).send({ mensaje: 'Error en  la peticion'});
+        if(!productosEncontrados) return res.status(500)
+            .send({ mensaje: 'Error al obtener los productos'})
+
+        return res.status(200).send({ productos: productosEncontrados })
+    })
+}
+
+
 module.exports = {
     agregarProductos,
     editarProducto,
     eliminarProducto,
-    obtenerProductos
+    obtenerProductos,
+    BusquedaProductoPorNombre
 }
