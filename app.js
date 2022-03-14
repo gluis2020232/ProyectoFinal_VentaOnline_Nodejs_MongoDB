@@ -7,6 +7,7 @@ const usuarioRutas = require('./src/routes/usuario.routes');
 const productoRutas = require('./src/routes/productos.routes');
 const categoriaRutas = require('./src/routes/categoría.routes');
 const carritoRutas = require('./src/routes/carrito.routes');
+const facturaRutas = require('./src/routes/factura.routes');
 
 //MIDDLEWARE : Un middleware es un intermedio y un verificador de etc
 app.use(express.urlencoded({ extended: false}));
@@ -17,6 +18,6 @@ app.use(cors()); //Cargo la cabecera
 
 
 // CARGA DE RUTAS localhost:3000
-app.use('/api', usuarioRutas, productoRutas, categoriaRutas, carritoRutas);
+app.use('/api', usuarioRutas, productoRutas, categoriaRutas, carritoRutas, facturaRutas);
 
 module.exports = app;
