@@ -4,37 +4,40 @@ const jwt = require('../services/jwt');
 
 function Registrar(req, res) {
     var parametros = req.body;
+
+    if(!parametros.nombre || !parametros.apellido ||
+        !parametros.email || !parametros.password) {
+        return res.status(500).send({ mensaje: 'Parámetros inválidos' });
+    }
+
     var usuarioModel = new Usuario();
 
-    if(parametros.nombre && parametros.apellido && 
-        parametros.email && parametros.password) {
-            usuarioModel.nombre = parametros.nombre;
-            usuarioModel.apellido = parametros.apellido;
-            usuarioModel.email = parametros.email;
-            usuarioModel.rol = 'ROL_CLIENTE';
-            usuarioModel.imagen = null;
+    usuarioModel.nombre = parametros.nombre;
+    usuarioModel.apellido = parametros.apellido;
+    usuarioModel.email = parametros.email;
+    usuarioModel.rol = 'ROL_CLIENTE';
+    usuarioModel.imagen = null;
 
-            Usuario.find({ email : parametros.email }, (err, usuarioEncontrado) => {
-                if ( usuarioEncontrado.length == 0 ) {
+    Usuario.find({ email : parametros.email }, (err, usuarioEncontrado) => {
+        if ( usuarioEncontrado.length == 0 ) {
 
-                    bcrypt.hash(parametros.password, null, null, (err, passwordEncriptada) => {
-                        usuarioModel.password = passwordEncriptada;
+            bcrypt.hash(parametros.password, null, null, (err, passwordEncriptada) => {
+                usuarioModel.password = passwordEncriptada;
 
-                        usuarioModel.save((err, usuarioGuardado) => {
-                            if (err) return res.status(500)
-                                .send({ mensaje: 'Error en la peticion' });
-                            if(!usuarioGuardado) return res.status(500)
-                                .send({ mensaje: 'Error al agregar el Usuario'});
-                            
-                            return res.status(200).send({ usuario: usuarioGuardado });
-                        });
-                    });                    
-                } else {
-                    return res.status(500)
-                        .send({ mensaje: 'Este correo, ya  se encuentra utilizado' });
-                }
-            })
-    }
+                usuarioModel.save((err, usuarioGuardado) => {
+                    if (err) return res.status(500)
+                        .send({ mensaje: 'Error en la peticion' });
+                    if(!usuarioGuardado) return res.status(500)
+                        .send({ mensaje: 'Error al agregar el Usuario'});
+
+                    return res.status(200).send({ usuario: usuarioGuardado });
+                });
+            });
+        } else {
+            return res.status(500)
+                .send({ mensaje: 'Este correo, ya  se encuentra utilizado' });
+        }
+    })
 }
 
 function RegistrarAdmin(req, res) {
@@ -59,16 +62,16 @@ function RegistrarAdmin(req, res) {
                         .send({ mensaje: 'Error en la peticion' });
                     if(!usuarioGuardado) return res.status(500)
                         .send({ mensaje: 'Error al agregar el Usuario'});
-                    
+
                     return res.status(200).send({ usuario: usuarioGuardado });
                 });
-            });                    
+            });
         } else {
             return res.status(500)
                 .send({ mensaje: 'Este correo, ya  se encuentra utilizado' });
         }
     })
-    
+
 }
 
 
@@ -78,7 +81,7 @@ function Login(req, res) {
         if(err) return res.status(500).send({ mensaje: 'Error en la peticion' });
         if(usuarioEncontrado){
             // COMPARO CONTRASENA SIN ENCRIPTAR CON LA ENCRIPTADA
-            bcrypt.compare(parametros.password, usuarioEncontrado.password, 
+            bcrypt.compare(parametros.password, usuarioEncontrado.password,
                 (err, verificacionPassword)=>{//TRUE OR FALSE
                     // VERIFICO SI EL PASSWORD COINCIDE EN BASE DE DATOS
                     if ( verificacionPassword ) {
@@ -92,7 +95,7 @@ function Login(req, res) {
                                 .send({ usuario: usuarioEncontrado })
                         }
 
-                        
+
                     } else {
                         return res.status(500)
                             .send({ mensaje: 'Las contrasena no coincide'});
@@ -115,7 +118,7 @@ function EditarUsuario(req, res) {
     delete parametros.rol;
 
     Usuario.findByIdAndUpdate(idUser, parametros, { new:true } ,(err, usuarioActualizado) => {
-      
+
         //Verificaciones
         if (err) return res.status(500).send({ mensaje: 'Error en la peticion' });
         if(!usuarioActualizado) return res.status(404)
@@ -144,7 +147,7 @@ function EliminarUsuario(req, res) {
 
 module.exports = {
     Registrar,
-    RegistrarAdmin, 
+    RegistrarAdmin,
     Login,
     EditarUsuario,
     EliminarUsuario

@@ -1,4 +1,6 @@
+const mongoose = require('mongoose');
 const Productos = require('../models/productos.model');
+const Asignaciones = require('../models/asignacionCateg.model');
 
 
 function agregarProductos (req, res) {
@@ -14,13 +16,31 @@ function agregarProductos (req, res) {
         modeloProductos.idAdmin = req.user.sub; // El id del Admin viene en el token
 
         modeloProductos.save((err, productoGuardado) => {  //Almacenar a la base de datos
-
             //Verificaciones
             if (err) return res.status(500).send({ mensaje: 'Error en la peticion '});
             if(!productoGuardado) return res.status(500).send({ mensaje: 'Error al agregar el producto'}); //Si no trae nada
             //Verificaciones
 
-            return res.status(200).send({ productos: productoGuardado});
+            if (!parametros.categorias) {
+                return res.status(200).send({ productos: productoGuardado });
+            }
+
+            const categorias = Array.isArray(parametros.categorias) ? parametros.categorias : [parametros.categorias];
+
+            for (let i = 0; i < categorias.length; i++) {
+                const productoCategoria = new Asignaciones();
+
+                productoCategoria.idCategoria = mongoose.Types.ObjectId(categorias[i]);
+                productoCategoria.idProducto = productoGuardado.id;
+
+                productoCategoria.save((err) => {
+                    if (err) {
+                        console.log(`ERROR al guardar la categoria ${categorias[i]}`);
+                    }
+                });
+            }
+
+            return res.status(200).send({ productos: productoGuardado });
         })
     } else {
         return res.status(500).send({ mensaje: "Debe enviar los parámetros obligatorios."})
