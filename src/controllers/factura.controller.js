@@ -44,7 +44,7 @@ function pasarCarritoAFactura(req, res) {
                         facturaProducto.idProducto = carritoProductos[index].idProducto;
                         facturaProducto.cantidad = carritoProductos[index].cantidad;
                         facturaProducto.precio = carritoProductos[index].precio;
-                        facturaProducto.total = carritoProductos[index].total;
+                        facturaProducto.subtotal = carritoProductos[index].subtotal;
 
                         productosPromesas.push(facturaProducto.save());
                     }

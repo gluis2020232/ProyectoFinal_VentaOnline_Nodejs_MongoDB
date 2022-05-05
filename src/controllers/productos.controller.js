@@ -3,22 +3,22 @@ const Productos = require('../models/productos.model');
 const Asignaciones = require('../models/asignacionCateg.model');
 
 
-function agregarProductos (req, res) {
+function agregarProductos(req, res) {
     const parametros = req.body; //Obtener todos lo parametros de postman body
     const modeloProductos = new Productos();
 
     //if(req.user.rol == 'ADMIN')
 
-    if( parametros.nombre) {
+    if (parametros.nombre) {
         modeloProductos.nombre = parametros.nombre;
         modeloProductos.proveedor = parametros.proveedor;
         modeloProductos.precio = parametros.precio;
         modeloProductos.idAdmin = req.user.sub; // El id del Admin viene en el token
 
-        modeloProductos.save((err, productoGuardado) => {  //Almacenar a la base de datos
+        modeloProductos.save((err, productoGuardado) => { //Almacenar a la base de datos
             //Verificaciones
-            if (err) return res.status(500).send({ mensaje: 'Error en la peticion '});
-            if(!productoGuardado) return res.status(500).send({ mensaje: 'Error al agregar el producto'}); //Si no trae nada
+            if (err) return res.status(500).send({ mensaje: 'Error en la peticion ' });
+            if (!productoGuardado) return res.status(500).send({ mensaje: 'Error al agregar el producto' }); //Si no trae nada
             //Verificaciones
 
             if (!parametros.categorias) {
@@ -43,7 +43,7 @@ function agregarProductos (req, res) {
             return res.status(200).send({ productos: productoGuardado });
         })
     } else {
-        return res.status(500).send({ mensaje: "Debe enviar los parámetros obligatorios."})
+        return res.status(500).send({ mensaje: "Debe enviar los parámetros obligatorios." })
     }
 }
 
@@ -52,15 +52,15 @@ function editarProducto(req, res) {
     var idProd = req.params.idProducto; //Obtener el valor de la variable en ruta
     var parametros = req.body; //Obtener los los parámetros en el body
 
-    Productos.findByIdAndUpdate(idProd, parametros, { new:true } ,(err, productoEditado)=>{
-      
+    Productos.findByIdAndUpdate(idProd, parametros, { new: true }, (err, productoEditado) => {
+
         //Verificaciones
         if (err) return res.status(500).send({ mensaje: 'Error en la peticion' });
-        if(!productoEditado) return res.status(404)
+        if (!productoEditado) return res.status(404)
             .send({ mensaje: 'Error al Editar el Producto' });
         //Verificaciones
 
-        return res.status(200).send({ productos: productoEditado});
+        return res.status(200).send({ productos: productoEditado });
     })
 }
 
@@ -68,21 +68,21 @@ function editarProducto(req, res) {
 function eliminarProducto(req, res) {
     var idProd = req.params.idProducto; //Obtener el valor de la variable en ruta
 
-    Productos.findByIdAndDelete(idProd, (err, productoEliminado)=>{
+    Productos.findByIdAndDelete(idProd, (err, productoEliminado) => {
 
         //Verificaciones
-        if(err) return res.status(500).send({ mensaje: 'Error en la peticion' });
-        if(!productoEliminado) return res.status(500)
+        if (err) return res.status(500).send({ mensaje: 'Error en la peticion' });
+        if (!productoEliminado) return res.status(500)
             .send({ mensaje: 'Error al eliminar el producto' })
-        //Verificaciones
+            //Verificaciones
 
         return res.status(200).send({ producto: productoEliminado });
     })
 }
 
-function obtenerProductos (req, res)  {
+function obtenerProductos(req, res) {
     Productos.find({}, (err, productosEncontrados) => {
-        
+
         return res.send({ productos: productosEncontrados })
     })
 }
@@ -92,9 +92,9 @@ function BusquedaProductoPorNombre(req, res) {
     var nomProd = req.params.nombreProducto;
 
     Productos.find({ nombre: nomProd }, (err, productosEncontrados) => {
-        if(err) return res.status(500).send({ mensaje: 'Error en  la peticion'});
-        if(!productosEncontrados) return res.status(500)
-            .send({ mensaje: 'Error al obtener los productos'})
+        if (err) return res.status(500).send({ mensaje: 'Error en  la peticion' });
+        if (!productosEncontrados) return res.status(500)
+            .send({ mensaje: 'Error al obtener los productos' })
 
         return res.status(200).send({ productos: productosEncontrados })
     })
